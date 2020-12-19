@@ -23,6 +23,14 @@ namespace Heaps
             _heap = new T[capacity];
         }
 
+        public IEnumerable<T> Values()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                yield return _heap[i];
+            }
+        }
+
         public void Insert(T value)
         {
             if (IsFull)
@@ -36,13 +44,6 @@ namespace Heaps
             Count++;
         }
 
-        public IEnumerable<T> Values()
-        {
-            for(int i = 0; i < Count; i++)
-            {
-                yield return _heap[i];
-            }
-        }
         private void Swim(int indexOfSwimmingItem)
         {
             T newValue = _heap[indexOfSwimmingItem];
@@ -69,6 +70,77 @@ namespace Heaps
         private int ParentIndex(int index)
         {
             return (index - 1) / 2;
+        }
+
+        public T Peek()
+        {
+            if (IsEmpty)
+                throw new InvalidOperationException("The fucking heap contains absolutely no elements");
+
+            return _heap[0];
+        }
+
+        public T Remove()
+        {
+            return Remove(0);
+        }
+
+        private T Remove(int index)
+        {
+            if (IsEmpty)
+                throw new InvalidOperationException("The fucking heap contains absolutely no elements");
+
+            T removedValue = _heap[index];
+            _heap[index] = _heap[Count - 1];
+            Count--;
+
+            Sink(index);
+
+            return removedValue;
+        }
+
+        private void Sink(int indexOfSinkingItem)
+        {
+            int heapMaxIndex = Count - 1;
+
+            while (indexOfSinkingItem < heapMaxIndex)
+            {
+                int indexOfLeftChild = 2 * indexOfSinkingItem + 1;
+                int indexOfRightChild = 2 * indexOfSinkingItem + 2;
+
+                if (indexOfLeftChild > heapMaxIndex)
+                    break;
+                else
+                {
+                    int indexOfChildToSwap = GetIndexOfChildToSwap(indexOfLeftChild, indexOfRightChild);
+                    if (_heap[indexOfSinkingItem].CompareTo(_heap[indexOfChildToSwap]) < 0)
+                    {
+                        Swap(indexOfSinkingItem, indexOfChildToSwap);
+                        indexOfSinkingItem = indexOfChildToSwap;
+                    }
+                    else
+                        break;
+                }
+            }
+        }
+
+        private void Swap(int indexOfSinkingItem, int indexOfChildToSwap)
+        {
+            T tmp = _heap[indexOfSinkingItem];
+            _heap[indexOfSinkingItem] = _heap[indexOfChildToSwap];
+            _heap[indexOfChildToSwap] = tmp;
+        }
+
+        private int GetIndexOfChildToSwap(int indexOfLeftChild, int indexOfRightChild)
+        {
+            if (indexOfRightChild > (Count - 1))
+                return indexOfLeftChild;
+            else
+            {
+                int indexToReturn = (_heap[indexOfLeftChild].CompareTo(_heap[indexOfRightChild]) > 0) 
+                    ? indexOfLeftChild : indexOfRightChild;
+                return indexToReturn;
+            }
         }
     }
 }
