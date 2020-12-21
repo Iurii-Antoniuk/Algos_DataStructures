@@ -94,33 +94,30 @@ namespace Heaps
             _heap[index] = _heap[Count - 1];
             Count--;
 
-            Sink(index);
+            Sink(index, Count - 1);
 
             return removedValue;
         }
 
-        private void Sink(int indexOfSinkingItem)
+        private void Sink(int indexOfSinkingItem, int lastHeapIndex)
         {
-            int heapMaxIndex = Count - 1;
-
-            while (indexOfSinkingItem < heapMaxIndex)
+            while (indexOfSinkingItem < lastHeapIndex)
             {
                 int indexOfLeftChild = 2 * indexOfSinkingItem + 1;
                 int indexOfRightChild = 2 * indexOfSinkingItem + 2;
 
-                if (indexOfLeftChild > heapMaxIndex)
+                if (indexOfLeftChild > lastHeapIndex)
                     break;
-                else
+
+                int indexOfChildToSwap = GetIndexOfChildToSwap(indexOfLeftChild, indexOfRightChild, lastHeapIndex);
+                if (_heap[indexOfSinkingItem].CompareTo(_heap[indexOfChildToSwap]) < 0)
                 {
-                    int indexOfChildToSwap = GetIndexOfChildToSwap(indexOfLeftChild, indexOfRightChild);
-                    if (_heap[indexOfSinkingItem].CompareTo(_heap[indexOfChildToSwap]) < 0)
-                    {
-                        Swap(indexOfSinkingItem, indexOfChildToSwap);
-                        indexOfSinkingItem = indexOfChildToSwap;
-                    }
-                    else
-                        break;
+                    Swap(indexOfSinkingItem, indexOfChildToSwap);
                 }
+                else
+                    break;
+
+                indexOfSinkingItem = indexOfChildToSwap;
             }
         }
 
@@ -131,15 +128,27 @@ namespace Heaps
             _heap[indexOfChildToSwap] = tmp;
         }
 
-        private int GetIndexOfChildToSwap(int indexOfLeftChild, int indexOfRightChild)
+        private int GetIndexOfChildToSwap(int indexOfLeftChild, int indexOfRightChild, int lastHeapIndex)
         {
-            if (indexOfRightChild > (Count - 1))
+            if (indexOfRightChild > lastHeapIndex)
                 return indexOfLeftChild;
             else
             {
                 int indexToReturn = (_heap[indexOfLeftChild].CompareTo(_heap[indexOfRightChild]) > 0) 
                     ? indexOfLeftChild : indexOfRightChild;
                 return indexToReturn;
+            }
+        }
+
+
+        public void Sort()
+        {
+            int heapLastIndex = Count - 1;
+
+            for (int i = 0; i < heapLastIndex; i++)
+            {
+                Swap(0, heapLastIndex - i);
+                Sink(0, heapLastIndex - i - 1);
             }
         }
     }
