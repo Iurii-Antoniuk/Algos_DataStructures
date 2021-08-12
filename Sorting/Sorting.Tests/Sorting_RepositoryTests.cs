@@ -68,6 +68,12 @@ namespace Sorting.Tests
         }
 
         [Test]
+        public void MergeSortNoLocals_ValidInput_SortedInput()
+        {
+            RunTestsForSortAlgorithms(Sorting_Repository.MergeSortNoLocals);
+        }
+
+        [Test]
         public void QuickSort_ValidInput_SortedInput()
         {
             RunTestsForSortAlgorithms(Sorting_Repository.QuickSort);

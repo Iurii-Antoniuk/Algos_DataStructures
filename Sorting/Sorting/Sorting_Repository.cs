@@ -95,6 +95,44 @@ namespace Sorting
             }
         }
 
+        public static void MergeSortNoLocals(int[] array)
+        {
+            int[] aux = new int[array.Length];
+            Sort(0, array.Length - 1, array, aux);
+
+        }
+
+        public static void Sort(int low, int high, int[] array, int[] aux)
+        {
+            if (high <= low)
+                return;
+
+            int mid = (high + low) / 2;
+            Sort(low, mid, array, aux);
+            Sort(mid + 1, high, array, aux);
+            Array.Copy(array, low, aux, low, high - low + 1);
+            Merge(low, mid, high, array, aux);
+        }
+
+        public static void Merge(int low, int mid, int high, int[] array, int[] aux)
+        {
+            if (array[mid] <= array[mid + 1])
+                return;
+
+            int i = low;
+            int j = mid + 1;
+
+            for (int k = low; k <= high; k++)
+            {
+                if (i > mid) array[k] = aux[j++];
+                else if (j > high) array[k] = aux[i++];
+                else if (aux[j] < aux[i])
+                    array[k] = aux[j++];
+                else
+                    array[k] = aux[i++];
+            }
+        }
+
         public static void QuickSort(int[] array)
         {
             Sort(0, array.Length-1);
