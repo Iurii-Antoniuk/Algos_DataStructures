@@ -95,41 +95,39 @@ namespace Sorting
             }
         }
 
-        public static void MergeSortNoLocals(int[] array)
+        public static void MergeSortNoLocals(int[] arr)
         {
-            int[] aux = new int[array.Length];
-            Sort(0, array.Length - 1, array, aux);
-
+            int[] aux = new int[arr.Length];
+            sort(0, arr.Length - 1, arr, aux);
         }
 
-        public static void Sort(int low, int high, int[] array, int[] aux)
+        private static void sort(int low, int high, int[] arr, int[] aux)
         {
-            if (high <= low)
+            if (low >= high)
                 return;
 
-            int mid = (high + low) / 2;
-            Sort(low, mid, array, aux);
-            Sort(mid + 1, high, array, aux);
-            Array.Copy(array, low, aux, low, high - low + 1);
-            Merge(low, mid, high, array, aux);
+            int mid = (low + high) / 2;
+            sort(low, mid, arr, aux);
+            sort(mid + 1, high, arr, aux);
+            Array.Copy(arr, low, aux, low, high - low + 1);
+            merge(low, mid, high, arr, aux);
         }
 
-        public static void Merge(int low, int mid, int high, int[] array, int[] aux)
+        private static void merge(int low, int mid, int high, int[] arr, int[] aux)
         {
-            if (array[mid] <= array[mid + 1])
+            if (arr[mid] <= arr[mid + 1])
                 return;
 
-            int i = low;
-            int j = mid + 1;
+            int i = low; int j = mid + 1;
 
             for (int k = low; k <= high; k++)
             {
-                if (i > mid) array[k] = aux[j++];
-                else if (j > high) array[k] = aux[i++];
+                if (i > mid) arr[k] = aux[j++];
+                else if (j > high) arr[k] = aux[i++];
                 else if (aux[j] < aux[i])
-                    array[k] = aux[j++];
+                    arr[k] = aux[j++];
                 else
-                    array[k] = aux[i++];
+                    arr[k] = aux[i++];
             }
         }
 
